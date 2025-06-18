@@ -3,13 +3,14 @@ import { ProductGrid } from './components/ProductGrid';
 import { Cart } from './components/Cart';
 import { BottomNavigation } from './components/BottomNavigation';
 import { InventoryPage } from './components/InventoryPage';
+import { StockManagementPage } from './components/StockManagementPage';
 import { useCart } from './hooks/useCart';
 import { products as initialProducts } from './data/products';
 import { Product } from './types';
 
 function App() {
   const cart = useCart();
-  const [showInventory, setShowInventory] = useState(false);
+  const [currentPage, setCurrentPage] = useState<'pos' | 'inventory' | 'stock'>('pos');
   const [products, setProducts] = useState(initialProducts);
 
   const handleProductSelect = (product: Product) => {
@@ -31,10 +32,6 @@ function App() {
     cart.clearCart();
   };
 
-  const handleInventoryClick = () => {
-    setShowInventory(true);
-  };
-
   const handleUpdateProduct = (updatedProduct: Product) => {
     setProducts(prevProducts =>
       prevProducts.map(p =>
@@ -51,13 +48,22 @@ function App() {
     setProducts(prevProducts => [...prevProducts, newProduct]);
   };
 
-  if (showInventory) {
+  if (currentPage === 'inventory') {
     return (
       <InventoryPage
         products={products}
+        onBack={() => setCurrentPage('pos')}
+      />
+    );
+  }
+
+  if (currentPage === 'stock') {
+    return (
+      <StockManagementPage
+        products={products}
         onUpdateProduct={handleUpdateProduct}
         onAddProduct={handleAddProduct}
-        onBack={() => setShowInventory(false)}
+        onBack={() => setCurrentPage('pos')}
       />
     );
   }
@@ -82,7 +88,7 @@ function App() {
               onProductSelect={handleProductSelect}
             />
           </div>
-          <BottomNavigation onInventoryClick={handleInventoryClick} />
+          <BottomNavigation onInventoryClick={() => setCurrentPage('inventory')} />
         </div>
 
         {/* Cart */}
@@ -93,6 +99,7 @@ function App() {
             onRemoveItem={cart.removeFromCart}
             onClearCart={cart.clearCart}
             onCheckout={handleCheckout}
+            onManageStock={() => setCurrentPage('stock')}
             total={cart.total}
             tax={cart.tax}
             grandTotal={cart.grandTotal}

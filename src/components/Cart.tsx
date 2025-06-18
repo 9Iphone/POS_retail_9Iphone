@@ -8,6 +8,7 @@ interface CartProps {
   onRemoveItem: (productId: number) => void;
   onClearCart: () => void;
   onCheckout: () => void;
+  onManageStock: () => void;
   total: number;
   tax: number;
   grandTotal: number;
@@ -19,6 +20,7 @@ export const Cart: React.FC<CartProps> = ({
   onRemoveItem,
   onClearCart,
   onCheckout,
+  onManageStock,
   total,
   tax,
   grandTotal,
@@ -128,7 +130,10 @@ export const Cart: React.FC<CartProps> = ({
           </button>
         </div>
 
-        <button className="w-full py-3 px-4 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors">
+        <button 
+          onClick={onManageStock}
+          className="w-full py-3 px-4 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+        >
           Manage Stock
         </button>
       </div>
