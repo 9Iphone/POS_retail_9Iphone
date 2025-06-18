@@ -4,13 +4,14 @@ import { Cart } from './components/Cart';
 import { BottomNavigation } from './components/BottomNavigation';
 import { InventoryPage } from './components/InventoryPage';
 import { StockManagementPage } from './components/StockManagementPage';
+import { AdminPage } from './components/AdminPage';
 import { useCart } from './hooks/useCart';
 import { products as initialProducts } from './data/products';
 import { Product } from './types';
 
 function App() {
   const cart = useCart();
-  const [currentPage, setCurrentPage] = useState<'pos' | 'inventory' | 'stock'>('pos');
+  const [currentPage, setCurrentPage] = useState<'pos' | 'inventory' | 'stock' | 'admin'>('pos');
   const [products, setProducts] = useState(initialProducts);
 
   const handleProductSelect = (product: Product) => {
@@ -48,6 +49,16 @@ function App() {
     setProducts(prevProducts => [...prevProducts, newProduct]);
   };
 
+  if (currentPage === 'admin') {
+    return (
+      <AdminPage
+        onBack={() => setCurrentPage('pos')}
+        onNavigateToStock={() => setCurrentPage('stock')}
+        onNavigateToInventory={() => setCurrentPage('inventory')}
+      />
+    );
+  }
+
   if (currentPage === 'inventory') {
     return (
       <InventoryPage
@@ -72,9 +83,17 @@ function App() {
     <div className="min-h-screen bg-gray-100 flex flex-col">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="px-6 py-4">
-          <h1 className="text-2xl font-bold text-gray-800">Point of Sale</h1>
-          <p className="text-gray-600 text-sm">Touch to select items</p>
+        <div className="px-6 py-4 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">Point of Sale</h1>
+            <p className="text-gray-600 text-sm">Touch to select items</p>
+          </div>
+          <button
+            onClick={() => setCurrentPage('admin')}
+            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center font-medium text-sm"
+          >
+            Admin
+          </button>
         </div>
       </header>
 
